@@ -1,0 +1,19 @@
+{% extends 'reviews/base.html' %}
+{% block title %}
+{% if instance is None %}New {{ model_type }}{% else %}
+Editing {{ model_type }} {{ instance }}{% endif %}
+{% endblock %}
+{% block content %}
+<h2>{% if instance is None %}New {{ model_type }}{% else %}
+    Editing {{ model_type }} <em>{{ instance }}</em>{% endif %}</h2>
+<p>{% if related_model_type and related_instance %}
+    For {{ related_model_type }} <em>{{ related_instance }}</em>{% endif %}
+</p>
+<form method="post" {% if is_file_upload %}enctype="multipart/form-data" {% endif %}>
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">
+        {% if instance is None %}Create{% else %}Save{% endif %}
+    </button>
+</form>
+{% endblock %}

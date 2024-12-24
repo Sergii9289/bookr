@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}Bookr{% endblock %}
+
+{% block content %}
+<style>
+  .flexrow
+  {display: flex;
+  border: 2px black;
+  }
+  .flexrow > div { flex: 1; }
+
+  .infocell {
+border: 2px solid green;
+border-radius: 5px 25px;
+background-color: white;
+padding: 5px;
+margin: 20px 5px 5px 5px;
+}
+</style>
+<div class="flexrow">
+  <div class="infocell">
+    <p><b>Profile</b></p>
+    <div>
+      <p>
+        Username: {{ request.user.username }}<br>
+        Name: {{ request.user.first_name }} {{ request.user.last_name }}<br>
+        Date Joined: {{ request.user.date_joined }} <br>
+        Email: {{ request.user.email }}<br>
+        Last Login: {{ request.user.last_login }}<br>
+      </p>
+    </div>
+  </div>
+  <div class="infocell">
+    <p><b>Viewed Books</b></p>
+    <div>
+      <p>
+        {% for book_id, book_title in request.session.viewed_books %}
+        <a href="/books/{{ book_id }}">{{ book_title }}</a><br>
+        {% empty %}
+        No recently viewed books found.
+        {% endfor %}
+      </p>
+    </div>
+  </div>
+  <div class="infocell">
+    <p><b>Search History</b></p>
+    <div>
+      <p>
+        {% for search, search_in in request.session.search_history %}
+        {{ search }} ({{ search_in }})<br>
+        {% empty %}
+        Nothing searched
+        {% endfor %}
+      </p>
+    </div>
+  </div>
+</div>
+<span class="message">Books read:</span>
+{% load profile_tags %}
+{% book_list request.user.username %}
+{% plot_demo %}
+{% autoescape off %}
+{{ books_read_plot }}
+{% endautoescape %}
+{% endblock %}

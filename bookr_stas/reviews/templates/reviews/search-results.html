@@ -1,0 +1,31 @@
+{% extends 'reviews/base.html' %}
+{% load static %}
+{% block title %}Search results for '{{ search_text }}'{% endblock %}
+{% block brand %}
+<img src="{% static 'reviews/logo.png' %}">
+{% endblock %}
+{% block content %}
+<h2>Search for Books</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn btn-primary" type="submit" formaction="/search-result/">Search</button>
+    <br>
+</form>
+{% if search_text %}
+<h3>Search results for <em>{{ search_text }}</em></h3>
+{% endif %}
+{% if books %}
+<ul class="list-group">
+    {% for book in books %}
+    <li class="list-group-item">
+        <span class="text-info">Title: </span> <span><a href="/books/{{ book.id }}/">{{ book }}</a></span><br>
+        <span class="text-info">Contributor: </span> <span>
+        {% for contributor in book.contributors.all %}
+        {{ contributor }}{% if not forloop.last %}, {% endif %}{% endfor %}
+    </span><br>
+        {% endfor %}
+    </li>
+    {% else %}<h3>No results found.</h3>
+    {% endif %}
+    {% endblock %}

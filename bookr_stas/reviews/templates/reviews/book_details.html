@@ -1,0 +1,56 @@
+{% extends 'reviews/base.html' %}
+{% load static %}
+{% block brand %}
+<img src="{% static 'reviews/logo.png' %}">
+{% endblock %}
+{% block content %}
+<h3>Book Details</h3>
+{% if book.cover %}
+<img src="{{ book.cover.url }}"><br>
+{% endif %}
+<ul class="list-group">
+  <li class="list-group-item">
+      {% if book.sample %}
+      <span class="text-info">Sample: </span><a href="/download/{{ book.id }}/">Download</a>
+      <br>
+      {% endif %}
+      <span class="text-info">Title: </span> <span>{{ book.title }}</span>
+      <br>
+      <span class="text-info">Publisher: </span><span>{{ book.publisher }}</span>
+      <br>
+      <span class="text-info">Publication Date: </span><span>{{ book.publication_date }}</span>
+      <br>
+      {% if book_rating %}
+      <span class="text-info">Rating: </span><span class="badge badge-primary badge-pill">{{ book_rating }}</span>
+      <br>{% endif %}
+  </li>
+</ul>
+{% if reviews %}
+<h3>Review Comments</h3>
+{% for review in reviews %}
+<ul class="list-group">
+    <li class="list-group-item">
+    <span class="text-info">Review comment: </span> <span>{{ review.content }}</span>
+      <br>
+    <span class="text-info">Created on: </span> <span>{{ review.date_created }}</span>
+      <br>
+    <span class="text-info">Modified on: </span> <span>{{ review.date_edited }}</span>
+      <br>
+    <span class="text-info">Rating: </span> <span class="badge badge-secondary badge-pill">{{ review.rating }}</span>
+      <br>
+    <span class="text-info">Creator: </span> <span>{{ review.creator }}</span>
+      <br>
+    </li>
+</ul>
+{% if user.is_staff or review.creator.id == user.id %}
+<span class="text-info">
+<a class="nav-link" href="/books/{{ book.id }}/reviews/{{ review.id }}/">Edit review</a></span>
+{% endif %}
+{% endfor %}
+{% else %}{% if user.is_authenticated %}<h3>Be the first one to write a review.</h3>{% endif %}
+{% endif %}
+{% if user.is_authenticated %}
+<a class="btn btn-primary" role="button" aria-pressed="true" href="/books/{{ book.id }}/reviews/new/">Add Reviews</a>
+<a class="btn btn-primary" role="button" aria-pressed="true" href="/books/{{ book.id }}/media/">Media</a>
+{% endif %}
+{% endblock %}
